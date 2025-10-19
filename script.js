@@ -1,6 +1,4 @@
-
-
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT: Replace with your Render backend URL ---
     const BACKEND_URL = 'https://backendchat-yzbp.onrender.com';
     const socket = io(BACKEND_URL);
@@ -9,6 +7,7 @@
     let username = null;
     let currentRoomId = null;
     let typingTimeout = null;
+    let messageObserver;
 
     // --- DOM Elements ---
     const screens = {
@@ -31,13 +30,29 @@
     const typingIndicator = document.getElementById('typing-indicator');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // --- Screen Management ---
+    // --- NEW: Intersection Observer for Read Receipts ---
+    const setupMessageObserver = () => {
+        messageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const messageEl = entry.target;
+                    const messageId = messageEl.id;
+                    // Only send "seen" for received messages that haven't been marked yet
+                    if (messageEl.classList.contains('received') && !messageEl.dataset.seen) {
+                        socket.emit('message-seen', { roomId: currentRoomId, messageId });
+                        messageEl.dataset.seen = 'true'; // Mark as seen to prevent re-sending
+                        messageObserver.unobserve(messageEl); // Stop observing once seen
+                    }
+                }
+            });
+        }, { threshold: 0.8 }); // Trigger when 80% of the message is visible
+    };
+
+    // --- Screen Management & Theming ---
     const showScreen = (screenName) => {
         Object.values(screens).forEach(screen => screen.classList.add('hidden'));
         screens[screenName].classList.remove('hidden');
     };
-
-    // --- Theme Switcher ---
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark') {
         document.body.classList.add('dark-theme');
@@ -58,24 +73,20 @@
         }
     });
 
-    createRoomBtn.addEventListener('click', () => {
-        socket.emit('create-room', username);
-    });
-
+    createRoomBtn.addEventListener('click', () => socket.emit('create-room', username));
     joinRoomForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const roomId = roomIdInput.value.trim();
-        if (roomId) {
-            socket.emit('join-room', { roomId, username });
-        }
+        if (roomId) socket.emit('join-room', { roomId, username });
     });
 
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const message = messageInput.value.trim();
         if (message) {
-            displayMessage({ message, senderName: 'You' }, true);
-            socket.emit('chat-message', { roomId: currentRoomId, message });
+            const messageId = `msg-${Date.now()}`;
+            displayMessage({ message, messageId, senderName: 'You' }, true);
+            socket.emit('chat-message', { roomId: currentRoomId, message, messageId });
             messageInput.value = '';
             socket.emit('typing', { roomId: currentRoomId, isTyping: false });
         }
@@ -83,19 +94,14 @@
 
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) {
-            uploadFile(file);
-        }
-        // Reset file input to allow selecting the same file again
+        if (file) uploadFile(file);
         e.target.value = '';
     });
 
     messageInput.addEventListener('input', () => {
         clearTimeout(typingTimeout);
         socket.emit('typing', { roomId: currentRoomId, isTyping: true });
-        typingTimeout = setTimeout(() => {
-            socket.emit('typing', { roomId: currentRoomId, isTyping: false });
-        }, 2000);
+        typingTimeout = setTimeout(() => socket.emit('typing', { roomId: currentRoomId, isTyping: false }), 2000);
     });
 
     // --- Socket.IO Event Handlers ---
@@ -103,6 +109,7 @@
         currentRoomId = roomId;
         roomCodeDisplay.textContent = roomId;
         showScreen('chat');
+        setupMessageObserver();
         displayNotification(`Room created. Share this code: ${roomId}`);
     });
 
@@ -110,6 +117,7 @@
         currentRoomId = roomIdInput.value.trim();
         roomCodeDisplay.textContent = currentRoomId;
         showScreen('chat');
+        setupMessageObserver();
     });
 
     socket.on('room-full', () => {
@@ -117,27 +125,29 @@
         errorMessage.classList.remove('hidden');
     });
 
-    socket.on('user-joined', (joinedUsername) => {
-        displayNotification(`${joinedUsername} has joined the chat.`);
-    });
-
-    socket.on('user-left', (leftUsername) => {
-        displayNotification(`${leftUsername} has left the chat.`);
+    socket.on('user-joined', (joinedUsername) => displayNotification(`${joinedUsername} has joined the chat.`));
+    socket.on('user-left', (leftUsername) => displayNotification(`${leftUsername || 'The other user'} has left the chat.`));
+    socket.on('chat-message', (data) => displayMessage(data, false));
+    socket.on('typing', ({ senderName, isTyping }) => {
+        typingIndicator.textContent = isTyping ? `${senderName} is typing...` : '';
     });
     
-    socket.on('chat-message', (data) => displayMessage(data, false));
-
     socket.on('file-shared', (fileData) => {
-        // Find the temporary loading message and replace it
         const tempMessage = document.getElementById(fileData.tempId);
-        if (tempMessage) {
-            tempMessage.remove();
-        }
+        if (tempMessage) tempMessage.remove();
         displayFile(fileData, fileData.senderId === socket.id);
     });
 
-    socket.on('typing', ({ senderName, isTyping }) => {
-        typingIndicator.textContent = isTyping ? `${senderName} is typing...` : '';
+    // NEW: Listener for the read receipt acknowledgment
+    socket.on('read-receipt', (messageId) => {
+        const messageEl = document.getElementById(messageId);
+        if (messageEl) {
+            const statusIcon = messageEl.querySelector('.message-status i');
+            if (statusIcon) {
+                statusIcon.classList.remove('fa-check');
+                statusIcon.classList.add('fa-check-double', 'read');
+            }
+        }
     });
 
     // --- Helper Functions ---
@@ -151,19 +161,32 @@
         scrollToBottom();
     };
 
-    const displayMessage = ({ message, senderName }, isSent) => {
+    const displayMessage = ({ message, messageId, senderName }, isSent) => {
         const div = document.createElement('div');
+        div.id = messageId; // Assign the unique ID
         div.classList.add('message', isSent ? 'sent' : 'received');
+
+        const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
+
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
-            <div class="message-bubble">${message}</div>
+            <div class="message-bubble">
+                <span>${message}</span>
+                ${statusIcon}
+            </div>
         `;
         messagesArea.appendChild(div);
+        
+        // If it's a received message, start observing it for read receipts
+        if (!isSent) {
+            messageObserver.observe(div);
+        }
+
         scrollToBottom();
     };
 
     const displayFile = ({ originalname, mimetype, size, path, senderName }, isSent) => {
-        const fileLink = `${BACKEND_URL}${path}`;
+        // Files are considered instantly "read", so this is simpler than text messages
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
         div.innerHTML = `
@@ -175,7 +198,7 @@
                         <p>${originalname}</p>
                         <span class="file-size">${formatFileSize(size)}</span>
                     </div>
-                    <a href="${fileLink}" target="_blank" download="${originalname}" class="download-btn" title="Download">
+                    <a href="${BACKEND_URL}${path}" target="_blank" download="${originalname}" class="download-btn" title="Download">
                         <i class="fas fa-download"></i>
                     </a>
                 </div>
@@ -186,7 +209,6 @@
 
     const uploadFile = async (file) => {
         const tempId = `temp-${Date.now()}`;
-        // Display loading animation immediately
         const div = document.createElement('div');
         div.id = tempId;
         div.classList.add('message', 'sent');
@@ -207,19 +229,17 @@
         formData.append('file', file);
         formData.append('roomId', currentRoomId);
         formData.append('senderId', socket.id);
-        formData.append('tempId', tempId); // Send temp ID to server
+        formData.append('tempId', tempId);
 
         try {
             await fetch(`${BACKEND_URL}/upload`, { method: 'POST', body: formData });
         } catch (error) {
             console.error('File upload failed:', error);
-            const tempMessage = document.getElementById(tempId);
-            if (tempMessage) tempMessage.remove();
-            displayMessage({ message: '⚠️ File upload failed.', senderName: 'Error' }, true);
+            if (document.getElementById(tempId)) document.getElementById(tempId).remove();
+            displayMessage({ message: '⚠️ File upload failed.', messageId: `err-${Date.now()}`, senderName: 'Error' }, true);
         }
     };
     
-    // Utility functions for file display
     const getFileIcon = (mimeType) => {
         if (mimeType.startsWith('image/')) return 'fa-solid fa-file-image';
         if (mimeType.startsWith('video/')) return 'fa-solid fa-file-video';
@@ -237,5 +257,5 @@
     };
 
     // --- Initial Setup ---
-    showScreen('name'); // Start at the name input screen
+    showScreen('name');
 });
