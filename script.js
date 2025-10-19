@@ -138,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayFile(fileData, fileData.senderId === socket.id);
     });
 
-    // NEW: Listener for the read receipt acknowledgment
     socket.on('read-receipt', (messageId) => {
         const messageEl = document.getElementById(messageId);
         if (messageEl) {
@@ -163,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayMessage = ({ message, messageId, senderName }, isSent) => {
         const div = document.createElement('div');
-        div.id = messageId; // Assign the unique ID
+        div.id = messageId;
         div.classList.add('message', isSent ? 'sent' : 'received');
 
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
@@ -177,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         messagesArea.appendChild(div);
         
-        // If it's a received message, start observing it for read receipts
         if (!isSent) {
             messageObserver.observe(div);
         }
@@ -186,9 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const displayFile = ({ originalname, mimetype, size, path, senderName }, isSent) => {
-        // Files are considered instantly "read", so this is simpler than text messages
+        const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
+        // --- UPDATED ICON HERE ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -198,8 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${originalname}</p>
                         <span class="file-size">${formatFileSize(size)}</span>
                     </div>
-                    <a href="${BACKEND_URL}${path}" target="_blank" download="${originalname}" class="download-btn" title="Download">
-                        <i class="fas fa-download"></i>
+                    <a href="${fileLink}" target="_blank" download="${originalname}" class="download-btn" title="Download">
+                        <i class="fa-solid fa-circle-down"></i>
                     </a>
                 </div>
             </div>`;
