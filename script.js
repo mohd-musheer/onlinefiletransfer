@@ -30,22 +30,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingIndicator = document.getElementById('typing-indicator');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // --- NEW: Intersection Observer for Read Receipts ---
+    // --- Intersection Observer for Read Receipts ---
     const setupMessageObserver = () => {
         messageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const messageEl = entry.target;
                     const messageId = messageEl.id;
-                    // Only send "seen" for received messages that haven't been marked yet
                     if (messageEl.classList.contains('received') && !messageEl.dataset.seen) {
                         socket.emit('message-seen', { roomId: currentRoomId, messageId });
-                        messageEl.dataset.seen = 'true'; // Mark as seen to prevent re-sending
-                        messageObserver.unobserve(messageEl); // Stop observing once seen
+                        messageEl.dataset.seen = 'true';
+                        messageObserver.unobserve(messageEl);
                     }
                 }
             });
-        }, { threshold: 0.8 }); // Trigger when 80% of the message is visible
+        }, { threshold: 0.8 });
     };
 
     // --- Screen Management & Theming ---
@@ -187,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
-        // --- UPDATED ICON HERE ---
+        // --- UPDATED IMAGE TAG AND NO TARGET BLANK ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -197,8 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${originalname}</p>
                         <span class="file-size">${formatFileSize(size)}</span>
                     </div>
-                    <a href="${fileLink}" target="_blank" download="${originalname}" class="download-btn" title="Download">
-                        <i class="fa-solid fa-circle-down"></i>
+                    <a href="${fileLink}" download="${originalname}" class="download-btn" title="Download">
+                        <img src="download-icon.png" alt="Download">
                     </a>
                 </div>
             </div>`;
