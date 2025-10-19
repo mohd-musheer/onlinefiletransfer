@@ -89,7 +89,7 @@ input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
 .message.sent { align-self: flex-end; align-items: flex-end; }
 .message.sent .message-bubble { background-color: var(--sent-bubble-bg); color: var(--sent-bubble-text); border-bottom-right-radius: 5px; }
 .message.received { align-self: flex-start; align-items: flex-start; }
-.message.received .message-bubble { background-color: var(--received-bubble-bg); color: var(--received-bubble-text); border-bottom-left-radius: 5px; padding-right: 12px; /* No extra padding for ticks */ }
+.message.received .message-bubble { background-color: var(--received-bubble-bg); color: var(--received-bubble-text); border-bottom-left-radius: 5px; padding-right: 12px; }
 
 /* Read Receipts */
 .message-status { position: absolute; bottom: 5px; right: 8px; font-size: 0.7rem; color: var(--ticks-color); }
@@ -98,10 +98,28 @@ input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
 /* File Messages & Loader */
 .file-message { display: flex; align-items: center; gap: 10px; min-width: 250px; }
 .file-icon { font-size: 2rem; color: var(--accent-color); }
+.file-info { text-align: left; }
 .file-info p { margin: 0; font-size: 0.9rem; font-weight: 500; }
 .file-info .file-size { font-size: 0.8rem; color: #888; }
-.download-btn { margin-left: auto; background: none; border: none; font-size: 1.5rem; color: var(--accent-color); cursor: pointer; transition: transform 0.2s; }
-.download-btn:hover { transform: scale(1.1); }
+
+/* --- UPDATED DOWNLOAD BUTTON STYLE --- */
+.download-btn {
+    margin-left: auto;
+    padding: 5px;
+    background: none;
+    border: none;
+    font-size: 1.8rem; /* Bigger icon */
+    color: var(--accent-color); /* Ensure it has a visible color */
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    opacity: 0.8; /* Slightly transparent by default */
+}
+.download-btn:hover {
+    transform: scale(1.15); /* Enlarge on hover */
+    opacity: 1; /* Fully visible on hover */
+}
+/* ------------------------------------ */
+
 .loader { width: 20px; height: 20px; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
