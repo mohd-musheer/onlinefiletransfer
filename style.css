@@ -105,18 +105,26 @@ input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
 /* --- UPDATED DOWNLOAD BUTTON STYLE --- */
 .download-btn {
     margin-left: auto;
-    padding: 5px;
     background: none;
     border: none;
-    font-size: 1.8rem; /* Bigger icon */
-    color: var(--accent-color); /* Ensure it has a visible color */
     cursor: pointer;
     transition: transform 0.2s, opacity 0.2s;
-    opacity: 0.8; /* Slightly transparent by default */
+    opacity: 0.9; /* Slightly transparent by default */
+    padding: 0; /* Remove padding for image */
+    width: 40px; /* Set a fixed size for the button wrapper */
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .download-btn:hover {
-    transform: scale(1.15); /* Enlarge on hover */
+    transform: scale(1.1); /* Enlarge on hover */
     opacity: 1; /* Fully visible on hover */
+}
+.download-btn img {
+    width: 100%; /* Make image fill the button area */
+    height: 100%;
+    object-fit: contain; /* Ensure image fits without cropping */
 }
 /* ------------------------------------ */
 
