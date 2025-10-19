@@ -30,6 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingIndicator = document.getElementById('typing-indicator');
     const themeToggle = document.getElementById('theme-toggle');
 
+    // --- NEW: Force Download Function ---
+    const forceDownload = (url, filename) => {
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                a.remove();
+            })
+            .catch(() => alert('Could not download file.'));
+    };
+
     // --- Intersection Observer for Read Receipts ---
     const setupMessageObserver = () => {
         messageObserver = new IntersectionObserver((entries) => {
@@ -102,6 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('typing', { roomId: currentRoomId, isTyping: true });
         typingTimeout = setTimeout(() => socket.emit('typing', { roomId: currentRoomId, isTyping: false }), 2000);
     });
+    
+    // NEW: Event listener for download clicks
+    messagesArea.addEventListener('click', (e) => {
+        const downloadBtn = e.target.closest('.download-btn');
+        if (downloadBtn) {
+            e.preventDefault(); // Prevent default link behavior
+            const url = downloadBtn.dataset.url;
+            const filename = downloadBtn.dataset.filename;
+            forceDownload(url, filename);
+        }
+    });
+
 
     // --- Socket.IO Event Handlers ---
     socket.on('room-created', (roomId) => {
@@ -186,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
-        // --- UPDATED IMAGE TAG AND NO TARGET BLANK ---
+        // UPDATED: Using data attributes instead of href
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -196,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>${originalname}</p>
                         <span class="file-size">${formatFileSize(size)}</span>
                     </div>
-                    <a href="${fileLink}" download="${originalname}" class="download-btn" title="Download">
+                    <a href="#" data-url="${fileLink}" data-filename="${originalname}" class="download-btn" title="Download">
                         <img src="download-icon.png" alt="Download">
                     </a>
                 </div>
