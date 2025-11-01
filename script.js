@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createRoomBtn = document.getElementById('create-room-btn');
     const joinRoomForm = document.getElementById('join-room-form');
     const roomIdInput = document.getElementById('room-id-input');
+    const joinGroupBtn = document.getElementById('join-group-btn'); // --- NEW BUTTON ---
     const errorMessage = document.getElementById('error-message');
     const roomCodeDisplay = document.getElementById('room-code-display');
     const messagesArea = document.getElementById('messages-area');
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingIndicator = document.getElementById('typing-indicator');
     const themeToggle = document.getElementById('theme-toggle');
 
-    // --- NEW: Force Download Function ---
+    // --- Force Download Function ---
     const forceDownload = (url, filename) => {
         fetch(url)
             .then(response => response.blob())
@@ -91,10 +92,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     createRoomBtn.addEventListener('click', () => socket.emit('create-room', username));
+
+    // --- UPDATED to send isGroup flag ---
     joinRoomForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const roomId = roomIdInput.value.trim();
-        if (roomId) socket.emit('join-room', { roomId, username });
+        if (roomId) {
+            errorMessage.classList.add('hidden');
+            socket.emit('join-room', { roomId, username, isGroup: false });
+        }
+    });
+
+    // --- NEW listener for group chat button ---
+    joinGroupBtn.addEventListener('click', () => {
+        errorMessage.classList.add('hidden');
+        socket.emit('join-room', { roomId: 'public-group-chat', username, isGroup: true });
     });
 
     messageForm.addEventListener('submit', (e) => {
@@ -121,17 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         typingTimeout = setTimeout(() => socket.emit('typing', { roomId: currentRoomId, isTyping: false }), 2000);
     });
     
-    // NEW: Event listener for download clicks
     messagesArea.addEventListener('click', (e) => {
         const downloadBtn = e.target.closest('.download-btn');
         if (downloadBtn) {
-            e.preventDefault(); // Prevent default link behavior
+            e.preventDefault();
             const url = downloadBtn.dataset.url;
             const filename = downloadBtn.dataset.filename;
             forceDownload(url, filename);
         }
     });
-
 
     // --- Socket.IO Event Handlers ---
     socket.on('room-created', (roomId) => {
@@ -142,15 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
         displayNotification(`Room created. Share this code: ${roomId}`);
     });
 
-    socket.on('join-success', () => {
-        currentRoomId = roomIdInput.value.trim();
-        roomCodeDisplay.textContent = currentRoomId;
+    // --- UPDATED to accept joinedRoomId ---
+    socket.on('join-success', (joinedRoomId) => {
+        currentRoomId = joinedRoomId;
+        roomCodeDisplay.textContent = joinedRoomId;
         showScreen('chat');
         setupMessageObserver();
     });
 
     socket.on('room-full', () => {
-        errorMessage.textContent = 'This room is full (2 people max).';
+        errorMessage.textContent = 'This private room is full (2 people max).';
         errorMessage.classList.remove('hidden');
     });
 
@@ -204,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         messagesArea.appendChild(div);
-        
+
         if (!isSent) {
             messageObserver.observe(div);
         }
@@ -216,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
-        // UPDATED: Using data attributes instead of href
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
