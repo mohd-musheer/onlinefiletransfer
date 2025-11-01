@@ -18,10 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameForm = document.getElementById('name-form');
     const nameInput = document.getElementById('name-input');
     const welcomeMessage = document.getElementById('welcome-message');
-    const createPrivateBtn = document.getElementById('create-private-btn');
-    const createGroupBtn = document.getElementById('create-group-btn');
-    const joinRoomForm = document.getElementById('join-room-form');
-    const roomIdInput = document.getElementById('room-id-input');
+    
+    // --- NEW: Form elements ---
+    const joinPrivateForm = document.getElementById('join-private-form');
+    const privateRoomIdInput = document.getElementById('private-room-id-input');
+    const joinGroupForm = document.getElementById('join-group-form');
+    const groupRoomIdInput = document.getElementById('group-room-id-input');
+    // ------------------------
+    
     const errorMessage = document.getElementById('error-message');
     const roomCodeDisplay = document.getElementById('room-code-display');
     const messagesArea = document.getElementById('messages-area');
@@ -91,24 +95,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    createPrivateBtn.addEventListener('click', () => {
-        errorMessage.classList.add('hidden');
-        socket.emit('create-private-room', username);
-    });
-
-    createGroupBtn.addEventListener('click', () => {
-        errorMessage.classList.add('hidden');
-        socket.emit('create-group-room', username);
-    });
-
-    joinRoomForm.addEventListener('submit', (e) => {
+    // --- UPDATED: Listeners for new forms ---
+    joinPrivateForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const roomId = roomIdInput.value.trim();
+        const roomId = privateRoomIdInput.value.trim();
         if (roomId) {
             errorMessage.classList.add('hidden');
-            socket.emit('join-room', { roomId, username });
+            socket.emit('join-room', { roomId, username, roomType: 'private' });
         }
     });
+
+    joinGroupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const roomId = groupRoomIdInput.value.trim();
+        if (roomId) {
+            errorMessage.classList.add('hidden');
+            socket.emit('join-room', { roomId, username, roomType: 'group' });
+        }
+    });
+    // ------------------------------------
 
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -130,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     messageInput.addEventListener('input', () => {
         clearTimeout(typingTimeout);
-        socket.emit('typing', { roomId: currentRoomId, isTyoing: true });
+        socket.emit('typing', { roomId: currentRoomId, isTyping: true });
         typingTimeout = setTimeout(() => socket.emit('typing', { roomId: currentRoomId, isTyping: false }), 2000);
     });
     
@@ -146,14 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Socket.IO Event Handlers ---
-    socket.on('room-created', (roomId) => {
-        currentRoomId = roomId;
-        roomCodeDisplay.textContent = roomId;
-        showScreen('chat');
-        setupMessageObserver();
-        displayNotification(`Room created. Share this code: ${roomId}`);
-    });
-
     socket.on('join-success', (joinedRoomId) => {
         currentRoomId = joinedRoomId;
         roomCodeDisplay.textContent = joinedRoomId;
@@ -167,7 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     socket.on('room-not-found', () => {
-        errorMessage.textContent = 'Room not found. Check the code and try again.';
+        // This won't be used now, but good to keep
+        errorMessage.textContent = 'Room not found. A new one will be created.';
+        errorMessage.classList.remove('hidden');
+    });
+
+    // --- NEW: Error for type mismatch ---
+    socket.on('room-type-mismatch', ({ existingType, attemptedType }) => {
+        errorMessage.textContent = `Error: This is a ${existingType} room. You tried to join as ${attemptedType}.`;
         errorMessage.classList.remove('hidden');
     });
 
@@ -213,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
-            <div class="message-bubble">
+            <div classm="message-bubble">
                 <span>${message}</span>
                 ${statusIcon}
             </div>
