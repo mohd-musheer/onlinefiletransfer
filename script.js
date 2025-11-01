@@ -210,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.id = messageId;
         div.classList.add('message', isSent ? 'sent' : 'received');
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
+        // --- TYPO FIX: Changed classm to class ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -228,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
+        // --- TYPO FIX: Changed class- to class ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
