@@ -15,6 +15,8 @@
     --error-text: #dc3545;
     --ticks-color: #888;
     --ticks-read-color: #34b7f1;
+    --group-color: #28a745;
+    --group-hover: #218838;
 }
 
 .dark-theme {
@@ -32,6 +34,8 @@
     --error-text: #ff5c5c;
     --ticks-color: #aaa;
     --ticks-read-color: #34b7f1;
+    --group-color: #218838;
+    --group-hover: #1e7e34;
 }
 
 /* General Styles */
@@ -73,6 +77,16 @@ h2 { margin-bottom: 1.5rem; font-weight: 500; }
 /* Forms */
 button { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; cursor: pointer; transition: background-color 0.2s; width: 100%; margin-top: 10px; }
 button:hover { background-color: var(--accent-hover); }
+
+/* --- NEW GROUP BUTTON STYLE --- */
+#join-group-btn {
+    background-color: var(--group-color);
+}
+#join-group-btn:hover {
+    background-color: var(--group-hover);
+}
+/* ---------------------------- */
+
 input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: var(--font-family); background-color: var(--primary-bg); color: var(--text-color); transition: border-color 0.2s, background-color 0.3s; }
 input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
 .room-actions p { margin: 1rem 0; color: #aaa; }
@@ -114,27 +128,10 @@ input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
 .chat-footer { padding: 1rem; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 #message-form { display: flex; gap: 10px; }
 #message-form button, .file-upload-btn { width: 48px; height: 48px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; padding: 8px; }
-
-/* --- NEW STYLES FOR YOUR IMAGES --- */
-.file-upload-btn {
-    background-color: var(--received-bubble-bg);
-    color: var(--received-bubble-text);
-    cursor: pointer;
-    border-radius: 8px;
-}
-.file-upload-btn:hover {
-     background-color: var(--border-color);
-}
-#message-form button {
-    background-color: var(--accent-color);
-}
-#message-form button img, .file-upload-btn img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-}
-/* ------------------------------------ */
-
+.file-upload-btn { background-color: var(--received-bubble-bg); color: var(--received-bubble-text); cursor: pointer; border-radius: 8px; }
+.file-upload-btn:hover { background-color: var(--border-color); }
+#message-form button { background-color: var(--accent-color); }
+#message-form button img, .file-upload-btn img { height: 100%; width: 100%; object-fit: contain; }
 #message-input { flex-grow: 1; height: 48px; padding: 0 15px; }
 
 /* Etc */
