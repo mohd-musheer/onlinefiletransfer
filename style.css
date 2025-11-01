@@ -78,7 +78,7 @@ h2 { margin-bottom: 1.5rem; font-weight: 500; }
 button { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; cursor: pointer; transition: background-color 0.2s; width: 100%; margin-top: 10px; }
 button:hover { background-color: var(--accent-hover); }
 
-/* --- UPDATED HOME BUTTONS --- */
+/* Home Screen Buttons */
 #create-private-btn {
     background-color: var(--accent-color);
 }
@@ -97,7 +97,6 @@ button:hover { background-color: var(--accent-hover); }
 #join-room-form button:hover {
     background-color: #5a6268;
 }
-/* ---------------------------- */
 
 input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: var(--font-family); background-color: var(--primary-bg); color: var(--text-color); transition: border-color 0.2s, background-color 0.3s; }
 input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
