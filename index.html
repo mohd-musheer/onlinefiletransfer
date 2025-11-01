@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>QuickShare | Secure Real-Time Chat & Anonymous File Sharing</title>
-
-    <meta name="description" content="Instantly share files and chat in a secure, private room. No signup, no accounts required. Create a temporary chat room and connect directly, browser-to-browser.">
-
-    <meta name="keywords" content="real-time chat, file sharing, secure file transfer, anonymous chat, no signup chat, browser to browser file transfer, temporary chat room, private file sharing, quick share">
+    <meta name="description" content="Instantly share files and chat in a secure, private room or a public group chat. No signup required. Connect directly, browser-to-browser.">
+    <meta name="keywords" content="real-time chat, group chat, file sharing, secure file transfer, anonymous chat, no signup chat, browser to browser file transfer, temporary chat room, private file sharing, quick share">
 
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,8 +37,11 @@
             <p>or</p>
             <form id="join-room-form">
                 <input type="text" id="room-id-input" placeholder="Enter Room Code" required>
-                <button type="submit">Join Room</button>
+                <button type="submit">Join Private Room</button>
             </form>
+
+            <p>or</p>
+            <button id="join-group-btn">Join Public Group Chat</button>
             <p id="error-message" class="error-text hidden"></p>
         </div>
     </div>
