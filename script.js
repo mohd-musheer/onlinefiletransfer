@@ -19,12 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('name-input');
     const welcomeMessage = document.getElementById('welcome-message');
     
-    // --- NEW: Form elements ---
     const joinPrivateForm = document.getElementById('join-private-form');
     const privateRoomIdInput = document.getElementById('private-room-id-input');
     const joinGroupForm = document.getElementById('join-group-form');
     const groupRoomIdInput = document.getElementById('group-room-id-input');
-    // ------------------------
     
     const errorMessage = document.getElementById('error-message');
     const roomCodeDisplay = document.getElementById('room-code-display');
@@ -125,11 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- UPDATED: Loops through all selected files ---
     fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) uploadFile(file);
-        e.target.value = '';
+        const files = e.target.files;
+        if (files.length > 0) {
+            for (const file of files) {
+                uploadFile(file); // Upload each file one by one
+            }
+        }
+        e.target.value = ''; // Reset file input
     });
+    // ---------------------------------------------
 
     messageInput.addEventListener('input', () => {
         clearTimeout(typingTimeout);
@@ -210,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         div.id = messageId;
         div.classList.add('message', isSent ? 'sent' : 'received');
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
-        // --- TYPO FIX: Changed classm to class ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -229,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileLink = `${BACKEND_URL}${path}`;
         const div = document.createElement('div');
         div.classList.add('message', isSent ? 'sent' : 'received');
-        // --- TYPO FIX: Changed class- to class ---
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('File upload failed:', error);
             if (document.getElementById(tempId)) document.getElementById(tempId).remove();
-            displayMessage({ message: '⚠️ File upload failed.', messageId: `err-${Date.now()}`, senderName: 'Error' }, true);
+            displayMessage({ message: `⚠️ ${file.name} upload failed.`, messageId: `err-${Date.now()}`, senderName: 'Error' }, true);
         }
     };
     
