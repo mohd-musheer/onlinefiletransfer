@@ -78,12 +78,24 @@ h2 { margin-bottom: 1.5rem; font-weight: 500; }
 button { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; cursor: pointer; transition: background-color 0.2s; width: 100%; margin-top: 10px; }
 button:hover { background-color: var(--accent-hover); }
 
-/* --- NEW GROUP BUTTON STYLE --- */
-#join-group-btn {
+/* --- UPDATED HOME BUTTONS --- */
+#create-private-btn {
+    background-color: var(--accent-color);
+}
+#create-private-btn:hover {
+    background-color: var(--accent-hover);
+}
+#create-group-btn {
     background-color: var(--group-color);
 }
-#join-group-btn:hover {
+#create-group-btn:hover {
     background-color: var(--group-hover);
+}
+#join-room-form button {
+    background-color: #6c757d;
+}
+#join-room-form button:hover {
+    background-color: #5a6268;
 }
 /* ---------------------------- */
 
