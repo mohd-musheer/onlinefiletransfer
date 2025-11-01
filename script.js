@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- IMPORTANT: Replace with your Render backend URL ---
-    const BACKEND_URL = 'https://backendchat-yzbp.onrender.com/';
+    // --- IMPORTANT: The URL is now correct (no slash at the end) ---
+    const BACKEND_URL = 'https://backendchat-yzbp.onrender.com';
     const socket = io(BACKEND_URL);
 
     // --- State Variables ---
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
-            <div classm="message-bubble">
+            <div class="message-bubble">
                 <span>${message}</span>
                 ${statusIcon}
             </div>
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="file-icon ${getFileIcon(mimetype)}"></i>
                     <div class="file-info">
                         <p>${originalname}</p>
-                        <span class="file-size">${formatFileSize(size)}</span>
+                        <span class-"file-size">${formatFileSize(size)}</span>
                     </div>
                     <a href="#" data-url="${fileLink}" data-filename="${originalname}" class="download-btn" title="Download">
                         <img src="download-icon.png" alt="Download">
@@ -303,4 +303,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial Setup ---
     showScreen('name');
 });
-
