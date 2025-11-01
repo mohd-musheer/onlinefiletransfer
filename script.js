@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT: Replace with your Render backend URL ---
-    const BACKEND_URL = 'https://backendchat-yzbp.onrender.com';
+    const BACKEND_URL = 'https://onlinefiletransfer.onrender.com';
     const socket = io(BACKEND_URL);
 
     // --- State Variables ---
@@ -18,10 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameForm = document.getElementById('name-form');
     const nameInput = document.getElementById('name-input');
     const welcomeMessage = document.getElementById('welcome-message');
-    const createRoomBtn = document.getElementById('create-room-btn');
+    // --- UPDATED Button IDs ---
+    const createPrivateBtn = document.getElementById('create-private-btn');
+    const createGroupBtn = document.getElementById('create-group-btn');
+    // -------------------------
     const joinRoomForm = document.getElementById('join-room-form');
     const roomIdInput = document.getElementById('room-id-input');
-    const joinGroupBtn = document.getElementById('join-group-btn'); // --- NEW BUTTON ---
     const errorMessage = document.getElementById('error-message');
     const roomCodeDisplay = document.getElementById('room-code-display');
     const messagesArea = document.getElementById('messages-area');
@@ -91,23 +93,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    createRoomBtn.addEventListener('click', () => socket.emit('create-room', username));
+    // --- UPDATED for new buttons ---
+    createPrivateBtn.addEventListener('click', () => {
+        errorMessage.classList.add('hidden');
+        socket.emit('create-private-room', username);
+    });
 
-    // --- UPDATED to send isGroup flag ---
+    createGroupBtn.addEventListener('click', () => {
+        errorMessage.classList.add('hidden');
+        socket.emit('create-group-room', username);
+    });
+
+    // --- UPDATED to be universal ---
     joinRoomForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const roomId = roomIdInput.value.trim();
         if (roomId) {
             errorMessage.classList.add('hidden');
-            socket.emit('join-room', { roomId, username, isGroup: false });
+            socket.emit('join-room', { roomId, username });
         }
     });
-
-    // --- NEW listener for group chat button ---
-    joinGroupBtn.addEventListener('click', () => {
-        errorMessage.classList.add('hidden');
-        socket.emit('join-room', { roomId: 'public-group-chat', username, isGroup: true });
-    });
+    // -------------------------------
 
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -152,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         displayNotification(`Room created. Share this code: ${roomId}`);
     });
 
-    // --- UPDATED to accept joinedRoomId ---
     socket.on('join-success', (joinedRoomId) => {
         currentRoomId = joinedRoomId;
         roomCodeDisplay.textContent = joinedRoomId;
@@ -162,6 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('room-full', () => {
         errorMessage.textContent = 'This private room is full (2 people max).';
+        errorMessage.classList.remove('hidden');
+    });
+
+    // --- NEW error message ---
+    socket.on('room-not-found', () => {
+        errorMessage.textContent = 'Room not found. Check the code and try again.';
         errorMessage.classList.remove('hidden');
     });
 
@@ -204,9 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.id = messageId;
         div.classList.add('message', isSent ? 'sent' : 'received');
-
         const statusIcon = isSent ? `<div class="message-status"><i class="fas fa-check"></i></div>` : '';
-
         div.innerHTML = `
             <p class="sender-name">${senderName}</p>
             <div class="message-bubble">
@@ -215,11 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         messagesArea.appendChild(div);
-
         if (!isSent) {
             messageObserver.observe(div);
         }
-
         scrollToBottom();
     };
 
