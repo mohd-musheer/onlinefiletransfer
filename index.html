@@ -33,17 +33,22 @@
     <div class="container screen hidden" id="home-screen">
         <h2 id="welcome-message"></h2>
         <div class="room-actions">
-            <button id="create-private-btn">Create Private Room (Max 2)</button>
-            <button id="create-group-btn">Create Group Room (Unlimited)</button>
-            <p>or</p>
-            <form id="join-room-form">
-                <input type="text" id="room-id-input" placeholder="Enter Room Code" required>
-                <button type="submit">Join Room</button>
+            
+            <form id="join-private-form">
+                <input type="text" id="private-room-id-input" placeholder="Enter Private Room Code" required>
+                <button type="submit">Join/Create Private Chat</button>
             </form>
+            
+            <p>or</p>
+            
+            <form id="join-group-form">
+                <input type="text" id="group-room-id-input" placeholder="Enter Group Room Code" required>
+                <button type="submit" class="group-btn">Join/Create Group Chat</button>
+            </form>
+
             <p id="error-message" class="error-text hidden"></p>
         </div>
     </div>
-
     <div class="container chat-container screen hidden" id="chat-screen">
         <header class="chat-header">
             <h3>Room: <span id="room-code-display"></span></h3>
