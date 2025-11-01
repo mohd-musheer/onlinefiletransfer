@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT: Replace with your Render backend URL ---
-    const BACKEND_URL = 'https://backendchat-yzbp.onrender.com';
+    const BACKEND_URL = 'https://backendchat-yzbp.onrender.com/';
     const socket = io(BACKEND_URL);
 
     // --- State Variables ---
@@ -303,3 +303,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial Setup ---
     showScreen('name');
 });
+
