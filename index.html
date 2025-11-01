@@ -49,6 +49,7 @@
             <p id="error-message" class="error-text hidden"></p>
         </div>
     </div>
+
     <div class="container chat-container screen hidden" id="chat-screen">
         <header class="chat-header">
             <h3>Room: <span id="room-code-display"></span></h3>
@@ -61,7 +62,7 @@
                 <label for="file-input" class="file-upload-btn" title="Send file">
                     <img src="upload.png" alt="Upload file button">
                 </label>
-                <input type="file" id="file-input" style="display: none;">
+                <input type="file" id="file-input" style="display: none;" multiple>
                 <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
                 <button type="submit" title="Send message">
                     <img src="send.png" alt="Send message button">
