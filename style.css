@@ -78,29 +78,24 @@ h2 { margin-bottom: 1.5rem; font-weight: 500; }
 button { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem; cursor: pointer; transition: background-color 0.2s; width: 100%; margin-top: 10px; }
 button:hover { background-color: var(--accent-hover); }
 
-/* Home Screen Buttons */
-#create-private-btn {
+/* --- UPDATED HOME FORMS --- */
+#join-private-form button {
     background-color: var(--accent-color);
 }
-#create-private-btn:hover {
+#join-private-form button:hover {
     background-color: var(--accent-hover);
 }
-#create-group-btn {
+#join-group-form button {
     background-color: var(--group-color);
 }
-#create-group-btn:hover {
+#join-group-form button:hover {
     background-color: var(--group-hover);
 }
-#join-room-form button {
-    background-color: #6c757d;
-}
-#join-room-form button:hover {
-    background-color: #5a6268;
-}
+/* -------------------------- */
 
 input[type="text"] { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: var(--font-family); background-color: var(--primary-bg); color: var(--text-color); transition: border-color 0.2s, background-color 0.3s; }
 input[type="text"]:focus { outline: none; border-color: var(--accent-color); }
-.room-actions p { margin: 1rem 0; color: #aaa; }
+.room-actions p { margin: 1.5rem 0; color: #aaa; }
 
 /* Chat Area */
 .chat-header { padding: 1rem; border-bottom: 1px solid var(--border-color); text-align: center; font-weight: 500; flex-shrink: 0; }
