@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- IMPORTANT: The URL is now correct (no slash at the end) ---
+    // --- CORRECTED URL: Removed the (/) slash from the end ---
     const BACKEND_URL = 'https://backendchat-yzbp.onrender.com';
     const socket = io(BACKEND_URL);
 
@@ -95,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- UPDATED: Listeners for new forms ---
     joinPrivateForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const roomId = privateRoomIdInput.value.trim();
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('join-room', { roomId, username, roomType: 'group' });
         }
     });
-    // ------------------------------------
 
     messageForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -164,12 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     socket.on('room-not-found', () => {
-        // This won't be used now, but good to keep
-        errorMessage.textContent = 'Room not found. A new one will be created.';
-        errorMessage.classList.remove('hidden');
+        // This is not an error, it just means we're creating a new room
     });
 
-    // --- NEW: Error for type mismatch ---
     socket.on('room-type-mismatch', ({ existingType, attemptedType }) => {
         errorMessage.textContent = `Error: This is a ${existingType} room. You tried to join as ${attemptedType}.`;
         errorMessage.classList.remove('hidden');
@@ -240,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="file-icon ${getFileIcon(mimetype)}"></i>
                     <div class="file-info">
                         <p>${originalname}</p>
-                        <span class-"file-size">${formatFileSize(size)}</span>
+                        <span class="file-size">${formatFileSize(size)}</span>
                     </div>
                     <a href="#" data-url="${fileLink}" data-filename="${originalname}" class="download-btn" title="Download">
                         <img src="download-icon.png" alt="Download">
