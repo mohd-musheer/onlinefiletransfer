@@ -4,6 +4,7 @@ QuickShare is a lightweight, browser-based communication tool designed for users
 
 Live Demo: https://onlinefiletransfer.onrender.com
 
+
 (Note: Initial loading may take a minute as the server wakes up from sleep mode.)
 
 🌟 Key Features
@@ -53,5 +54,7 @@ QuickShare is built with a "Privacy First" philosophy:
 Transient Storage: The server acts as a temporary relay.
 
 10-Minute TTL (Time-To-Live): Files are not hosted indefinitely. Our automated system wipes the 500MB server buffer every 10 minutes, ensuring your data doesn't leave a permanent digital footprint.
+
+
 
 Anonymous: No IP logging or user tracking is implemented.
