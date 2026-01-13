@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- Socket.IO Event Handlers ---
+    
     socket.on('join-success', (joinedRoomId) => {
         currentRoomId = joinedRoomId;
         roomCodeDisplay.textContent = joinedRoomId;
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     socket.on('room-not-found', () => {
-        // This is not an error, it just means we're creating a new room
+   
     });
 
     socket.on('room-type-mismatch', ({ existingType, attemptedType }) => {
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Helper Functions ---
+    
     const scrollToBottom = () => messagesArea.scrollTop = messagesArea.scrollHeight;
 
     const displayNotification = (text) => {
