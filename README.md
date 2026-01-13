@@ -48,6 +48,8 @@ Click the Upload icon to select and send files (Supports images, PDFs, videos, e
 
 Download: Click the download icon on any received file to save it to your device.
 
+
+
 🔒 Security & Privacy
 QuickShare is built with a "Privacy First" philosophy:
 
