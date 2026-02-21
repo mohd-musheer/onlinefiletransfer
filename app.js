@@ -38,17 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setRoomState(joinedRoomId, messageObserver);
     });
 
-    // --- Theme Init ---
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-        DOM.themeToggle.checked = true;
-    }
-    DOM.themeToggle.addEventListener('change', () => {
-        document.body.classList.toggle('dark-theme');
-        localStorage.setItem('theme', DOM.themeToggle.checked ? 'dark' : 'light');
-    });
-
     // --- Event Listeners ---
     DOM.nameForm.addEventListener('submit', (e) => {
         e.preventDefault();

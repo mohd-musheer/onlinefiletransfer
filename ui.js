@@ -22,7 +22,6 @@ export const DOM = {
     messageInput: document.getElementById('message-input'),
     fileInput: document.getElementById('file-input'),
     typingIndicator: document.getElementById('typing-indicator'),
-    themeToggle: document.getElementById('theme-toggle'),
     clearChatBtn: document.getElementById('clear-chat-btn'),
     toastContainer: document.getElementById('toast-container'),
     loadingOverlay: document.getElementById('loading-overlay')
