@@ -1,0 +1,50 @@
+Create a presentation (PPT) based on the following project details. Distribute the content across 8-10 slides with appropriate headings and bullet points.
+
+---
+### Project Title
+Quick Shair: Secure Real-Time Chat & Anonymous File Sharing
+
+### 1. Introduction
+- A lightweight, browser-based communication tool designed for speed, privacy, and beautiful design.
+- Connects users directly in private or group rooms for instant chat and file sharing.
+- No signup tracking, no installations, or long-term data storage.
+- Premium UI with glassmorphism, responsive design, and Dark Mode.
+
+### 2. How it Works (Working)
+- **Room Management**: Users enter a temporary name and join either a "Private" (max 2 users) or "Group" room by entering a Room Code.
+- **Real-Time Communication**: Uses WebSockets to emit text messages, typing indicators, and read receipts across clients connected to the same room instantly.
+- **File Transfer**: Users can upload files (images, PDFs, videos, etc.) directly. The files are securely uploaded via POST request to a backend Express server, which emits the file info to the room for others to securely download via a generated link.
+- **Local Storage**: Preferences like 'Dark Mode' are saved locally, while chat history can be instantly wiped on the frontend.
+- **Intersection Observer API**: Used natively to verify when a chat block is visible to an individual and send the correct "Read Receipt" status.
+
+### 3. Tech Used (Tech Stack)
+- **Frontend**: HTML5, CSS3 (Modern Variables, Flexbox, Themes), Vanilla JavaScript (Modular: `app.js`, `socket.js`, `ui.js`, `utils.js`).
+- **Real-Time Engine**: Socket.io (WebSocket protocol).
+- **Icons & Typography**: FontAwesome 6 (Vector Icons), Google "Poppins" Font.
+- **Backend / Deployment**: Node.js / Express server, hosted on Render.
+
+### 4. Pros
+- **Zero Friction**: No user signup or app installation needed. Fully browser-to-browser.
+- **Real-Time Instant Messaging**: Near-zero latency with typing indicators and real-time read receipts.
+- **Anonymous**: No tracking or IP logging implementations. 
+- **Privacy First**: Files and chats are not kept permanently.
+- **UI/UX**: Beautiful toast notifications, seamless Dark/Light theme toggles, clean loader states, and clear chat capacity natively in the UI.
+
+### 5. Cons
+- **Not True P2P WebRTC**: Because files are relayed to a central node server rather than true peer-to-peer, maximum throughput and file size are limited by the host server bandwidth and storage.
+- **Render Free Tier Limitations**: Initial load-times can be impacted if the server "sleeps".
+- **Short Data Lifespan**: With a 10-minute automated Time-To-Live (TTL), users cannot retrieve older files or data after leaving heavily.
+
+### 6. Security & Privacy
+- **Transient Storage**: The server acts purely as a temporary file relay and socket broadcaster.
+- **10-Minute TTL (Time-To-Live)**: Automated system wipes the server buffer/storage every 10 minutes, ensuring zero permanent digital footprint.
+- **Anonymization**: IP addresses are not logged, databases do not exist, and identities are explicitly temporary (based purely on socket IDs).
+
+### 7. References
+1. Socket.io Official Documentation: Establishing Real-Time WebSocket Connections.
+2. Web API Interfaces (MDN Web Docs): `IntersectionObserver` for read receipts, `FormData` for binary uploads.
+3. Express.js: Implementing file uploading routing.
+4. Render: Backend containerization and continuous deployment references.
+---
+
+Please use this outline to structure the presentation content. Format the output such that I can easily copy-paste it into PowerPoint slides.

@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>QuickShare | Secure Real-Time Chat & Anonymous File Sharing</title>
-    <meta name="description" content="Instantly share files and chat in a secure, private room or a public group chat. No signup required. Connect directly, browser-to-browser.">
-    <meta name="keywords" content="real-time chat, group chat, file sharing, secure file transfer, anonymous chat, no signup chat, browser to browser file transfer, temporary chat room, private file sharing, quick share">
+    <title>Quick Shair | Online File Transfer & Secure Chat</title>
+    <meta name="description"
+        content="Quick Shair is the ultimate online file transfer and secure browser-to-browser real-time chat service. Share files instantly without signup or limits.">
+    <meta name="keywords"
+        content="Quick Shair, online file transfer, secure file transfer, real-time chat, anonymous file sharing, peer-to-peer share, no signup chat, quick file share, send files online">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Quick Shair | Online File Transfer & Secure Chat">
+    <meta property="og:description" content="Instantly share files and chat in a secure room. No signup required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onlinefiletransfer.onrender.com/">
+    <meta property="og:image" content="https://onlinefiletransfer.onrender.com/QuickShair.png">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Quick Shair | Online File Transfer">
+    <meta name="twitter:description" content="Instantly share files and chat securely.">
+    <meta name="twitter:image" content="https://onlinefiletransfer.onrender.com/QuickShair.png">
+
+    <!-- Favicon -->
+    <link rel="icon" href="logo.png" type="image/png">
 
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,35 +33,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a9a6105396.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <div class="theme-switcher">
+    <div class="theme-switcher" title="Toggle Theme">
         <i class="fas fa-sun"></i>
         <label class="switch"><input type="checkbox" id="theme-toggle"><span class="slider round"></span></label>
         <i class="fas fa-moon"></i>
     </div>
 
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Connecting to Quick Shair...</p>
+    </div>
+
     <div class="container screen" id="name-screen">
-        <div class="logo"><i class="fa-solid fa-bolt-lightning"></i><h1>QuickShare</h1></div>
+        <div class="logo">
+            <div class="icon-bg"><img src="logo.png" alt="Logo" style="width: 28px; height: 28px; object-fit: contain;">
+            </div>
+            <h1>Quick Shair</h1>
+        </div>
         <h2 class="tagline">Secure, private, browser-to-browser chat.</h2>
         <form id="name-form">
-            <input type="text" id="name-input" placeholder="Enter your name" required>
-            <button type="submit">Continue</button>
+            <input type="text" id="name-input" placeholder="Enter your name" required autocomplete="off">
+            <button type="submit" class="primary-btn">Continue <i class="fa-solid fa-arrow-right"></i></button>
         </form>
     </div>
 
     <div class="container screen hidden" id="home-screen">
         <h2 id="welcome-message"></h2>
         <div class="room-actions">
-            
-            <form id="join-private-form">
-                <input type="text" id="private-room-id-input" placeholder="Enter Private Room Code" required>
-                <button type="submit">Join/Create Private Chat</button>
+
+            <form id="join-private-form" class="room-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="text" id="private-room-id-input" placeholder="Enter Private Room Code" required
+                        autocomplete="off">
+                </div>
+                <button type="submit" class="primary-btn">Join/Create Private Chat</button>
             </form>
-            
-            <p>or</p>
-            
-            <form id="join-group-form">
-                <input type="text" id="group-room-id-input" placeholder="Enter Group Room Code" required>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <form id="join-group-form" class="room-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-users"></i>
+                    <input type="text" id="group-room-id-input" placeholder="Enter Group Room Code" required
+                        autocomplete="off">
+                </div>
                 <button type="submit" class="group-btn">Join/Create Group Chat</button>
             </form>
 
@@ -52,28 +95,36 @@
 
     <div class="container chat-container screen hidden" id="chat-screen">
         <header class="chat-header">
-            <h3>Room: <span id="room-code-display"></span></h3>
+            <div class="header-info">
+                <i class="fa-solid fa-hashtag room-icon"></i>
+                <h3 class="room-title">Room: <span id="room-code-display"></span></h3>
+            </div>
+            <div class="header-actions">
+                <button id="clear-chat-btn" class="icon-btn danger" title="Clear Chat" type="button">
+                    <img src="clear.svg" alt="Clear Chat" style="width: 20px; height: 20px; filter: invert(1);">
+                </button>
+            </div>
         </header>
         <div class="messages-area" id="messages-area">
-            </div>
+            <!-- Messages will be injected here -->
+        </div>
         <div class="typing-indicator" id="typing-indicator"></div>
         <footer class="chat-footer">
             <form id="message-form">
-                <label for="file-input" class="file-upload-btn" title="Send file">
-                    <img src="upload.png" alt="Upload file button">
+                <label for="file-input" class="icon-btn file-upload-btn" title="Send file">
+                    <img src="files.svg" alt="Attach File" style="width: 20px; height: 20px; filter: invert(0.5);">
                 </label>
                 <input type="file" id="file-input" style="display: none;" multiple>
-                <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
-                <button type="submit" title="Send message">
-                    <img src="send.png" alt="Send message button">
+                <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
+                <button type="submit" class="icon-btn send-btn" title="Send message">
+                    <img src="send.svg" alt="Send" style="width: 20px; height: 20px; filter: invert(1);">
                 </button>
             </form>
         </footer>
     </div>
 
-    
-
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
+
 </html>
