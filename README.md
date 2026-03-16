@@ -4,8 +4,7 @@
 
 QuickShare is a lightweight, browser-based communication tool designed for users who value privacy, speed, and beautiful design. Connect directly with others in private or group rooms to chat and share files without the need for accounts or long-term data storage.
 
-**Live:** [https://onlinefiletransfer.onrender.com](https://onlinefiletransfer.onrender.com)  
-*(Note: Initial loading may take a minute as the server wakes up from sleep mode.)*
+**Live:** [https://quickshare.work.gd](https://quickshare.work.gd)    
 
 ---
 
